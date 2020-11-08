@@ -4,11 +4,11 @@
 #include "core/class_db.h"
 #include "raw_packer.h"
 
-void register_gdmRawPacker_types() {
+void register_rawpacker_types() {
 
 	ClassDB::register_class<RawPacker>();
 }
 
-void unregister_gdmRawPacker_types() {
+void unregister_rawpacker_types() {
    //nothing to do here
 }
