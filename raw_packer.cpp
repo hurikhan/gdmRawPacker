@@ -15,7 +15,7 @@ Error RawPacker::encode(const String& fmt, const Array& array, uint8_t *buf, int
 		ERR_FAIL_COND_V(j>=array.size(),ERR_INVALID_DATA);
 		
 		type = array[j].get_type();
-		
+	
 		switch (fmt[i]) {
 			case 'c':
 			case 'b':
@@ -94,7 +94,7 @@ Error RawPacker::encode(const String& fmt, const Array& array, uint8_t *buf, int
 			
 			case 'f': {
 				
-				ERR_FAIL_COND_V(type!=Variant::REAL,ERR_INVALID_DATA);
+				ERR_FAIL_COND_V(type!=Variant::FLOAT,ERR_INVALID_DATA);
 				
 				if (buf) {
 					encode_float((float)array[j],buf);
@@ -107,7 +107,7 @@ Error RawPacker::encode(const String& fmt, const Array& array, uint8_t *buf, int
 			
 			case 'd': {
 				
-				ERR_FAIL_COND_V(type!=Variant::REAL,ERR_INVALID_DATA);
+				ERR_FAIL_COND_V(type!=Variant::FLOAT,ERR_INVALID_DATA);
 				
 				if (buf) {
 					encode_double((double)array[j],buf);
@@ -126,13 +126,15 @@ Error RawPacker::encode(const String& fmt, const Array& array, uint8_t *buf, int
 				
 				for (int k=i+1;k<fmt.length();k++) {
 					if (is_digit(fmt[k])) {
-						size_str.push_back(fmt[k]);
+						//size_str.push_back(fmt[k]);
+						size_str += fmt[k];
 					} else {
 						break;
 					}
 				}
-				
-				size_str.push_back('\0');
+
+				//size_str.push_back('\0');
+				//size_str += '\0';
 								
 				i+=size_str.length();
 				
@@ -201,7 +203,7 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 	int len=0;
 	
 	for (int i=0;i<fmt.length();i++) {
-		
+	
 		switch (fmt[i]) {
 			case 'c':
 			case 'b': {
@@ -328,13 +330,15 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 				
 				for (int k=i+1;k<fmt.length();k++) {
 					if (is_digit(fmt[k])) {
-						size_str.push_back(fmt[k]);
+						//size_str.push_back(fmt[k]);
+						size_str += fmt[k];
 					} else {
 						break;
 					}
 				}
 				
-				size_str.push_back('\0');
+				//size_str.push_back('\0');
+				//size_str += '\0';
 				
 				i+=size_str.length();
 				
@@ -344,28 +348,31 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 				
 				if (str_size==0) {
 					
-					ERR_FAIL_COND_V(size<len+1,ERR_INVALID_DATA)	
+					ERR_FAIL_COND_V(size<len+1,ERR_INVALID_DATA);	
 					
-					str.push_back('\0');
+					//str.push_back('\0');
+					str += '\0';
 					buf+=1;
 					len+=1;
 				} else {
 					
-					ERR_FAIL_COND_V(size<len+str_size,ERR_INVALID_DATA)
+					ERR_FAIL_COND_V(size<len+str_size,ERR_INVALID_DATA);
 					
 					int k=0;
 					
 					while (*buf!='\0'&&k<str_size-1) {
-						str.push_back((char)*buf);
+						//str.push_back((char)*buf);
+						str += (char)*buf;
 						buf+=1;
 						k+=1;
 					}
 					
-					str.push_back('\0');
+					//str.push_back('\0');
+					//str += '\0';
 					buf+=(str_size-k);
 					len+=str_size;
 				}
-			
+
 				array.push_back(str);
 			} break;
 			
@@ -377,14 +384,16 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 			
 				while (*buf!='\0') {
 					
-					str.push_back((char)*buf);
+					//str.push_back((char)*buf);
+					str += (char)*buf;
 					buf+=1;
 					len+=1;
 					
 					ERR_FAIL_COND_V(size<len+1,ERR_INVALID_DATA);
 				}
 			
-				str.push_back('\0');
+				//str.push_back('\0');
+				str += '\0';
 				buf+=1;
 				len+=1;
 				array.push_back(str);
@@ -408,31 +417,31 @@ bool RawPacker::is_digit(char c) {
 		c == '8' || c == '9');
 }
 
-ByteArray RawPacker::pack(const String& fmt, const Array& array) {
+PackedByteArray RawPacker::pack(const String& fmt, const Array& array) {
 	
 	int len;
 	Error err = encode(fmt,array,NULL,len);
 	
 	if (err!=OK)
-		return ByteArray();
+		return PackedByteArray();
 	
-	ByteArray res;
+	PackedByteArray res;
 	res.resize(len);
 	
-	ByteArray::Write w = res.write();
-	encode(fmt, array, w.ptr(), len);
+	//PackedByteArray w = res.ptrw();
+	encode(fmt, array, res.ptrw(), len);
 	
 	return res;
 }
 
-Array RawPacker::unpack(const String& fmt, const ByteArray& array) {
+Array RawPacker::unpack(const String& fmt, const PackedByteArray& array) {
 	
 	Array res;
 	
-	ByteArray::Read r = array.read();
+	//PackedByteArray::Read r = array.read();
 	
-	Error err = decode(fmt,res,r.ptr(),array.size());
-	
+	Error err = decode(fmt,res,array.ptr(),array.size());
+
 	if (err!=OK)
 		return Array();
 	
@@ -441,8 +450,8 @@ Array RawPacker::unpack(const String& fmt, const ByteArray& array) {
 
 void RawPacker::_bind_methods() {
 
-    ObjectTypeDB::bind_method("pack",&RawPacker::pack);
-    ObjectTypeDB::bind_method("unpack",&RawPacker::unpack);
+    ClassDB::bind_method("pack",&RawPacker::pack);
+    ClassDB::bind_method("unpack",&RawPacker::unpack);
 }
 
 RawPacker::RawPacker() {

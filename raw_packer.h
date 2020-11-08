@@ -3,15 +3,16 @@
 #ifndef RAW_PACKER_H
 #define RAW_PACKER_H
 
-#include "error_list.h"
-#include "error_macros.h"
-#include "io/marshalls.h"
-#include "reference.h"
-#include "ustring.h"
-#include "variant.h"
+#include "core/error_list.h"
+#include "core/error_macros.h"
+#include "core/io/marshalls.h"
+#include "core/reference.h"
+#include "core/ustring.h"
+#include "core/variant.h"
+#include "core/print_string.h"
 
 class RawPacker : public Reference {
-    OBJ_TYPE(RawPacker,Reference);
+    GDCLASS(RawPacker,Reference);
 
 	Error encode(const String& fmt, const Array& array, uint8_t *buf, int &len);
 	Error decode(const String& fmt, Array& array, const uint8_t *buf, int size);
@@ -24,8 +25,8 @@ protected:
 
 public:
 
-	ByteArray pack(const String& fmt, const Array& array);
-	Array unpack(const String& fmt, const ByteArray& array);
+	PackedByteArray pack(const String& fmt, const Array& array);
+	Array unpack(const String& fmt, const PackedByteArray& array);
     
     RawPacker();
 };
