@@ -1,6 +1,6 @@
 # RawPacker
 
-Simple binary packing/unpacking for `RawArray` in Godot.
+Simple binary packing/unpacking for `RawArray` in Godot V4.0.
 
 ## About
 
