@@ -3,13 +3,13 @@
 #ifndef RAW_PACKER_H
 #define RAW_PACKER_H
 
-#include "core/error_list.h"
-#include "core/error_macros.h"
+#include "core/error/error_list.h"
+#include "core/error/error_macros.h"
 #include "core/io/marshalls.h"
-#include "core/reference.h"
-#include "core/ustring.h"
-#include "core/variant.h"
-#include "core/print_string.h"
+#include "core/object/reference.h"
+#include "core/string/ustring.h"
+#include "core/string/print_string.h"
+#include "core/variant/variant.h"
 
 class RawPacker : public Reference {
     GDCLASS(RawPacker,Reference);
