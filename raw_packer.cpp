@@ -126,16 +126,12 @@ Error RawPacker::encode(const String& fmt, const Array& array, uint8_t *buf, int
 				
 				for (int k=i+1;k<fmt.length();k++) {
 					if (is_digit(fmt[k])) {
-						//size_str.push_back(fmt[k]);
 						size_str += fmt[k];
 					} else {
 						break;
 					}
 				}
 
-				//size_str.push_back('\0');
-				//size_str += '\0';
-								
 				i+=size_str.length();
 				
 				int str_size = size_str.to_int();
@@ -330,15 +326,11 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 				
 				for (int k=i+1;k<fmt.length();k++) {
 					if (is_digit(fmt[k])) {
-						//size_str.push_back(fmt[k]);
 						size_str += fmt[k];
 					} else {
 						break;
 					}
 				}
-				
-				//size_str.push_back('\0');
-				//size_str += '\0';
 				
 				i+=size_str.length();
 				
@@ -350,7 +342,6 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 					
 					ERR_FAIL_COND_V(size<len+1,ERR_INVALID_DATA);	
 					
-					//str.push_back('\0');
 					str += '\0';
 					buf+=1;
 					len+=1;
@@ -361,14 +352,12 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 					int k=0;
 					
 					while (*buf!='\0'&&k<str_size-1) {
-						//str.push_back((char)*buf);
+
 						str += (char)*buf;
 						buf+=1;
 						k+=1;
 					}
 					
-					//str.push_back('\0');
-					//str += '\0';
 					buf+=(str_size-k);
 					len+=str_size;
 				}
@@ -384,7 +373,6 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 			
 				while (*buf!='\0') {
 					
-					//str.push_back((char)*buf);
 					str += (char)*buf;
 					buf+=1;
 					len+=1;
@@ -392,7 +380,6 @@ Error RawPacker::decode(const String& fmt, Array& array, const uint8_t *buf, int
 					ERR_FAIL_COND_V(size<len+1,ERR_INVALID_DATA);
 				}
 			
-				//str.push_back('\0');
 				str += '\0';
 				buf+=1;
 				len+=1;
